@@ -1,1 +1,5 @@
 .venv/
+SHARD_0000.tar.gz
+*.tar.gz
+**/SHARD_0000.tar.gz
+SHARD_*.tar.gz
