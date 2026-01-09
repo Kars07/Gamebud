@@ -16,7 +16,7 @@ DEVICE = "cuda"
 
 print(f"Initializing Weighted Training on {DEVICE}...")
 
-# --- 1. Load & Analyze Data ---
+#1. Load & Analyze Data
 print("Loading Dataset...")
 try:
     data = torch.load("processed_dataset.pt")
@@ -30,7 +30,7 @@ targets = data["actions"]  # (N, 18)
 target_buttons = targets[:, :14]  # First 14 are binary buttons
 target_joysticks = targets[:, 14:]  # Last 4 are continuous joysticks
 
-# --- THE MAGIC: CALCULATE WEIGHTS ---
+# CALCULATE WEIGHTS
 # We count how many times each button was actually pressed
 # If a button was pressed 10 times in 600 frames:
 # Weight = (590 negatives) / (10 positives) = 59x penalty
@@ -64,7 +64,7 @@ train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_data, batch_size=BATCH_SIZE) if val_size > 0 else None
 
 
-# --- 2. Model Architecture ---
+# 2. Model Architecture
 class GamebudNano(nn.Module):
     def __init__(self, output_dim):
         super().__init__()
@@ -85,12 +85,11 @@ class GamebudNano(nn.Module):
 model = GamebudNano(output_dim=18).to(DEVICE)
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-# --- 3. Loss Functions ---
+# 3. Loss Functions
 criterion_joy = nn.MSELoss()
-# CRITICAL: We pass the weights here!
 criterion_btn = nn.BCEWithLogitsLoss(pos_weight=pos_weights)
 
-# --- 4. Training Loop ---
+# 4. Training Loop
 print("\n Starting Weighted Training...")
 start_time = time.time()
 
@@ -122,6 +121,6 @@ for epoch in range(EPOCHS):
         )
         print(f"Epoch {epoch+1}/{EPOCHS} | Loss: {train_loss/len(train_loader):.4f}")
 
-# --- 5. Save ---
+# 5. Save
 torch.save(model.state_dict(), "gamebud_weighted.pth")
 print("\nSaved model to 'gamebud_weighted.pth'")
