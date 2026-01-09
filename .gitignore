@@ -1,0 +1,8 @@
+.venv/
+SHARD_0000.tar.gz
+*.tar.gz
+**/SHARD_0000.tar.gz
+SHARD_*.tar.gz
+*.mp4processed_dataset.pt
+training_clip.mp4
+*.mp4
