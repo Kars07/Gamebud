@@ -31,7 +31,7 @@ Standard datasets often lack specific hardware mappings. This repo includes a fu
 
 ```bash
 # Clone the repo
-git clone [https://github.com/YOUR_USERNAME/Gamebud-Nano.git](https://github.com/YOUR_USERNAME/Gamebud-Nano.git)
+git clone [https://github.com/YOUR_USERNAME/Gamebud-Nano.git](https://github.com/Kars07/Gamebud.git)
 cd Gamebud-Nano
 
 # Install dependencies (WSL/Linux)
