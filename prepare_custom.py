@@ -12,7 +12,7 @@ OUTPUT_FILE = "processed_dataset.pt"
 
 print(f" Processing Custom Golden Dataset...")
 
-# --- 1. Load Actions ---
+# 1. Load Actions 
 df = pd.read_parquet(PARQUET_FILE)
 
 # Drop menu buttons that we don't train on
@@ -43,13 +43,13 @@ joy_cols = ["j_left_x", "j_left_y", "j_right_x", "j_right_y"]
 try:
     df = df[button_cols + joy_cols]
 except KeyError as e:
-    print(f"❌ Error: Missing columns in parquet file! {e}")
+    print(f"Error: Missing columns in parquet file! {e}")
     exit()
 
 action_tensor = torch.tensor(df.values, dtype=torch.float32)
 print(f"Actions Loaded: {len(df)} frames")
 
-# --- 2. Process Video ---
+# 2. Process Video 
 print(f"   Reading video {VIDEO_FILE}...")
 cap = cv2.VideoCapture(VIDEO_FILE)
 frames = []
@@ -73,7 +73,7 @@ cap.release()
 video_tensor = torch.tensor(np.array(frames), dtype=torch.float32) / 255.0
 print(f"Video Loaded: {len(frames)} frames")
 
-# --- 3. Smart Synchronization ---
+# 3. Smart Synchronization 
 n_actions = len(action_tensor)
 n_video = len(video_tensor)
 
@@ -83,7 +83,7 @@ n_video = len(video_tensor)
 #     video_tensor = video_tensor[::2]  # Take every 2nd frame
 #     print(f"   -> New Video Length: {len(video_tensor)}")
 
-# Since both are 60 FPS now, just sync lengths directly
+# Since both are 60 FPS, just sync lengths directly
 print(f"   Actions: {n_actions}, Video: {n_video}")
 min_len = min(n_actions, n_video)
 action_tensor = action_tensor[:min_len]
@@ -96,7 +96,7 @@ video_tensor = video_tensor[:min_len]
 
 print(f"Final Synced Dataset: {min_len} frames")
 
-# --- 4. Save ---
+# 4. Save 
 torch.save(
     {"states": video_tensor, "actions": action_tensor, "columns": df.columns.tolist()},
     OUTPUT_FILE,
